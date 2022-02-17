@@ -1,6 +1,7 @@
 const User = require("../models/User");
+const asyncHandler = require("express-async-handler");
 
-const register = async (req, res, next) => {
+const register = asyncHandler(async (req, res, next) => {
   const data = req.body;
 
   const user = await User.create(data);
@@ -9,6 +10,6 @@ const register = async (req, res, next) => {
     success: true,
     data: user,
   });
-};
+});
 
 module.exports = { register };
