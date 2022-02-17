@@ -8,6 +8,7 @@ dotenv.config({ path: "./config/env/config.env" });
 
 // Creating Server
 const app = express();
+app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 // MongoDB Connection
