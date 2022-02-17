@@ -33,7 +33,7 @@ const login = asyncHandler(async (req, res, next) => {
 
   res
     .status(200)
-    .cookie("access_token", token, {
+    .cookie("access_token", `Bearer: ${token}`, {
       expires: new Date(Date.now() + COOKIE_EXPIRE * 1000),
       httpOnly: true,
       secure: NODE_ENV === "development" ? false : true,
@@ -44,8 +44,22 @@ const login = asyncHandler(async (req, res, next) => {
         name: user.name,
         email: user.email,
       },
-      access_token: token,
+      access_token: `Bearer: ${token}`,
     });
 });
 
-module.exports = { register, login };
+const getLoggedInUser = (req, res, next) => {
+  res.status(200).json({
+    success: true,
+    data: req.user,
+  });
+};
+
+const logout = (req, res, next) => {
+  res.status(200).clearCookie("access_token").json({
+    success: true,
+    message: "Logout successful",
+  });
+};
+
+module.exports = { register, login, getLoggedInUser, logout };
