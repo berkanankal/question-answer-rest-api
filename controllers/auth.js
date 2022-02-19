@@ -34,7 +34,7 @@ const login = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .cookie("access_token", `Bearer: ${token}`, {
-      expires: new Date(Date.now() + COOKIE_EXPIRE * 1000),
+      expires: new Date(Date.now() + COOKIE_EXPIRE * 1000 * 60),
       httpOnly: true,
       secure: NODE_ENV === "development" ? false : true,
     })
@@ -62,4 +62,14 @@ const logout = (req, res, next) => {
   });
 };
 
-module.exports = { register, login, getLoggedInUser, logout };
+const imageUpload = (req, res, next) => {
+  if (!req.savedImage) {
+    return next(new CustomError("Please upload an image", 400));
+  }
+  res.status(200).json({
+    success: true,
+    message: "Profile image upload successful",
+  });
+};
+
+module.exports = { register, login, getLoggedInUser, logout, imageUpload };
