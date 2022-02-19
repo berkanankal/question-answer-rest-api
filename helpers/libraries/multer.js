@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const extension = file.mimetype.split("/")[1];
-    const savedImage = `image_${Date.now()}.${extension}`;
+    const savedImage = `image_${req.user.id}.${extension}`;
     req.savedImage = savedImage;
 
     cb(null, savedImage);

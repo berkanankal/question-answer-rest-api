@@ -62,14 +62,53 @@ const logout = (req, res, next) => {
   });
 };
 
-const imageUpload = (req, res, next) => {
+const imageUpload = asyncHandler(async (req, res, next) => {
   if (!req.savedImage) {
     return next(new CustomError("Please upload an image", 400));
   }
+
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      profile_image: req.savedImage,
+    },
+    { new: true, runValidators: true }
+  );
+
   res.status(200).json({
     success: true,
     message: "Profile image upload successful",
+    data: user,
   });
-};
+});
 
-module.exports = { register, login, getLoggedInUser, logout, imageUpload };
+const forgotPassword = asyncHandler(async (req, res, next) => {
+  const { resetEmail } = req.body;
+  const { RESET_PASSWORD_EXPIRE } = process.env;
+
+  const user = await User.findOne({ email: resetEmail });
+
+  if (!user) {
+    return next(new CustomError("There is no user with that email", 400));
+  }
+
+  const resetPasswordToken = user.getResetPasswordTokenFromUserModel();
+
+  user.resetPasswordToken = resetPasswordToken;
+  user.resetPasswordExpire = Date.now() + parseInt(RESET_PASSWORD_EXPIRE);
+  user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Token sent to your email",
+  });
+});
+
+module.exports = {
+  register,
+  login,
+  getLoggedInUser,
+  logout,
+  imageUpload,
+  forgotPassword,
+};
