@@ -157,6 +157,20 @@ const resetPassword = asyncHandler(async (req, res, next) => {
   });
 });
 
+const editDetails = asyncHandler(async (req, res, next) => {
+  const data = req.body;
+
+  const user = await User.findByIdAndUpdate(req.user.id, data, {
+    new: true,
+    runValidators: true,
+  });
+
+  return res.status(200).json({
+    success: true,
+    data: user,
+  });
+});
+
 module.exports = {
   register,
   login,
@@ -165,4 +179,5 @@ module.exports = {
   imageUpload,
   forgotPassword,
   resetPassword,
+  editDetails,
 };

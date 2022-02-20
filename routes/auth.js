@@ -7,6 +7,7 @@ const {
   imageUpload,
   forgotPassword,
   resetPassword,
+  editDetails,
 } = require("../controllers/auth");
 const { getAccessToRoute } = require("../middlewares/authorization/auth");
 const profileImageUpload = require("../helpers/libraries/multer");
@@ -19,6 +20,7 @@ router.get("/user", getAccessToRoute, getLoggedInUser);
 router.get("/logout", getAccessToRoute, logout);
 router.post("/forgotpassword", forgotPassword);
 router.put("/resetpassword", resetPassword);
+router.put("/edit", getAccessToRoute, editDetails);
 router.post(
   "/upload",
   [getAccessToRoute, profileImageUpload.single("profile_image")],
