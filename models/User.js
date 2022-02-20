@@ -56,6 +56,7 @@ UserSchema.methods.getTokenFromUserModel = function () {
   const payload = {
     id: this._id,
     name: this.name,
+    role: this.role,
   };
 
   const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: JWT_EXPIRE });

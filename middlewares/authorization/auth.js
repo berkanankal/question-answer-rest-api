@@ -11,7 +11,7 @@ const getAccessToRoute = (req, res, next) => {
   }
 
   const token = access_token.split(" ")[1];
-  
+
   const { JWT_SECRET_KEY } = process.env;
 
   jwt.verify(token, JWT_SECRET_KEY, function (err, decoded) {
@@ -24,10 +24,21 @@ const getAccessToRoute = (req, res, next) => {
     req.user = {
       id: decoded.id,
       name: decoded.name,
+      role: decoded.role,
     };
 
     return next();
   });
 };
 
-module.exports = { getAccessToRoute };
+const getAdminAccess = (req, res, next) => {
+  const { role } = req.user;
+
+  if (role !== "admin") {
+    return next(new CustomError("Only admins can access this page", 403));
+  }
+
+  return next();
+};
+
+module.exports = { getAccessToRoute, getAdminAccess };
