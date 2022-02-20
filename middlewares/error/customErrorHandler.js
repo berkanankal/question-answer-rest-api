@@ -20,7 +20,7 @@ const customErrorHandler = (err, req, res, next) => {
     customErr = new CustomError("Invalid ID", 400);
   }
 
-  res.status(customErr.statusCode || 500).json({
+  return res.status(customErr.statusCode || 500).json({
     success: false,
     message: customErr.message || "Internal Server Error",
   });

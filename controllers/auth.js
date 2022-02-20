@@ -9,7 +9,7 @@ const register = asyncHandler(async (req, res, next) => {
 
   const user = await User.create(data);
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     data: user,
   });
@@ -32,7 +32,7 @@ const login = asyncHandler(async (req, res, next) => {
 
   const token = user.getTokenFromUserModel();
 
-  res
+  return res
     .status(200)
     .cookie("access_token", `Bearer: ${token}`, {
       expires: new Date(Date.now() + COOKIE_EXPIRE * 1000 * 60),
@@ -50,14 +50,14 @@ const login = asyncHandler(async (req, res, next) => {
 });
 
 const getLoggedInUser = (req, res, next) => {
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     data: req.user,
   });
 };
 
 const logout = (req, res, next) => {
-  res.status(200).clearCookie("access_token").json({
+  return res.status(200).clearCookie("access_token").json({
     success: true,
     message: "Logout successful",
   });
@@ -76,7 +76,7 @@ const imageUpload = asyncHandler(async (req, res, next) => {
     { new: true, runValidators: true }
   );
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: "Profile image upload successful",
     data: user,
@@ -112,7 +112,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
       subject: "Reset Password Token", // Subject line
       html: emailTemplate, // html body
     });
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Token sent to your email",
     });
@@ -151,7 +151,7 @@ const resetPassword = asyncHandler(async (req, res, next) => {
   user.resetPasswordExpire = null;
   user.save();
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: "Reset Password Successful",
   });
