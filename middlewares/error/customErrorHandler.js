@@ -16,6 +16,9 @@ const customErrorHandler = (err, req, res, next) => {
       400
     );
   }
+  if (err.name === "CastError") {
+    customErr = new CustomError("Invalid ID", 400);
+  }
 
   res.status(customErr.statusCode || 500).json({
     success: false,
