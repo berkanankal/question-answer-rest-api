@@ -38,7 +38,7 @@ const UserSchema = new Schema({
     type: String,
     default: "default.jpg",
   },
-  blocked: {
+  isBlocked: {
     type: Boolean,
     default: false,
   },
