@@ -20,4 +20,21 @@ const blockUser = asyncHandler(async (req, res, next) => {
   });
 });
 
-module.exports = { blockUser };
+const deleteUser = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  const user = await User.findById(id);
+
+  if (user.role === "admin") {
+    return next(new CustomError("You can't delete an admin user", 400));
+  }
+
+  await user.remove();
+
+  return res.status(200).json({
+    success: true,
+    message: "Deleted user",
+  });
+});
+
+module.exports = { blockUser, deleteUser };
