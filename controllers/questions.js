@@ -10,7 +10,7 @@ const askNewQuestion = asyncHandler(async (req, res, next) => {
     user: req.user.id,
   });
 
-  res.status(201).json({
+  return res.status(201).json({
     success: true,
     data: question,
   });
