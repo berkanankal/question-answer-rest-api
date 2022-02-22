@@ -25,3 +25,5 @@ const QuestionSchema = new Schema({
   },
   slug: String,
 });
+
+module.exports = mongoose.model("Question", QuestionSchema);
