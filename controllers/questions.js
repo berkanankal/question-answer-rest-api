@@ -23,10 +23,18 @@ const getSingleQuestion = asyncHandler(async (req, res, next) => {
 });
 
 const askNewQuestion = asyncHandler(async (req, res, next) => {
-  const data = req.body;
+  let { content, title } = req.body;
+
+  if (!content || !title) {
+    return next(new CustomError("Please provide all fields", 400));
+  }
+
+  content = content.trim();
+  title = title.trim();
 
   const question = await Question.create({
-    ...data,
+    content,
+    title,
     user: req.user.id,
   });
 
@@ -56,9 +64,21 @@ const editQuestion = asyncHandler(async (req, res, next) => {
   });
 });
 
+const deleteQuestion = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  await Question.findByIdAndDelete(id);
+
+  return res.status(200).json({
+    success: true,
+    message: "Question deleted successfully",
+  });
+});
+
 module.exports = {
   getAllQuestions,
   getSingleQuestion,
   askNewQuestion,
   editQuestion,
+  deleteQuestion,
 };
