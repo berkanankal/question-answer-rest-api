@@ -49,7 +49,7 @@ const getQuestionOwnerAccess = asyncHandler(async (req, res, next) => {
 
   const question = await Question.findById(questionId);
 
-  if (question.user !== userId) {
+  if (question.user != userId) {
     return next(
       new CustomError("Only question owner can access this page", 403)
     );
