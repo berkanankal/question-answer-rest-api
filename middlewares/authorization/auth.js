@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const CustomError = require("../../helpers/error/CustomError");
+const Question = require("../../models/Question");
+const asyncHandler = require("express-async-handler");
 
 const getAccessToRoute = (req, res, next) => {
   const access_token = req.headers.authorization;
@@ -41,4 +43,19 @@ const getAdminAccess = (req, res, next) => {
   return next();
 };
 
-module.exports = { getAccessToRoute, getAdminAccess };
+const getQuestionOwnerAccess = asyncHandler(async (req, res, next) => {
+  const userId = req.user.id;
+  const questionId = req.params.id;
+
+  const question = await Question.findById(questionId);
+
+  if (question.user !== userId) {
+    return next(
+      new CustomError("Only question owner can access this page", 403)
+    );
+  }
+
+  return next();
+});
+
+module.exports = { getAccessToRoute, getAdminAccess, getQuestionOwnerAccess };
