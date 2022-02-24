@@ -31,6 +31,12 @@ const QuestionSchema = new Schema({
       ref: "User",
     },
   ],
+  answers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Answer",
+    },
+  ],
 });
 
 QuestionSchema.methods.makeSlug = function () {
