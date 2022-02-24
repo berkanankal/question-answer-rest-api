@@ -75,10 +75,52 @@ const deleteQuestion = asyncHandler(async (req, res, next) => {
   });
 });
 
+const likeQuestion = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  const question = await Question.findById(id);
+
+  if (question.likes.includes(userId)) {
+    return next(new CustomError("You already liked this question", 400));
+  }
+
+  question.likes.push(userId);
+  await question.save();
+
+  return res.status(200).json({
+    success: true,
+    data: question,
+  });
+});
+
+const dislikeQuestion = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  const question = await Question.findById(id);
+
+  if (!question.likes.includes(userId)) {
+    return next(new CustomError("You haven't liked this question", 400));
+  }
+
+  question.likes = question.likes.filter((like) => like != userId);
+  // const index = question.likes.indexOf(userId);
+  // question.likes.splice(index, 1);
+  await question.save();
+
+  return res.status(200).json({
+    success: true,
+    data: question,
+  });
+});
+
 module.exports = {
   getAllQuestions,
   getSingleQuestion,
   askNewQuestion,
   editQuestion,
   deleteQuestion,
+  likeQuestion,
+  dislikeQuestion,
 };

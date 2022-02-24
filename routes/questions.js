@@ -5,6 +5,8 @@ const {
   askNewQuestion,
   editQuestion,
   deleteQuestion,
+  likeQuestion,
+  dislikeQuestion,
 } = require("../controllers/questions");
 const {
   getAccessToRoute,
@@ -28,6 +30,12 @@ router.delete(
   "/:id",
   [getAccessToRoute, checkQuestionExist, getQuestionOwnerAccess],
   deleteQuestion
+);
+router.get("/:id/like", [getAccessToRoute, checkQuestionExist], likeQuestion);
+router.get(
+  "/:id/dislike",
+  [getAccessToRoute, checkQuestionExist],
+  dislikeQuestion
 );
 
 module.exports = router;

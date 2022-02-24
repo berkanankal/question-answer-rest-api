@@ -25,6 +25,12 @@ const QuestionSchema = new Schema({
     default: Date.now,
   },
   slug: String,
+  likes: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 QuestionSchema.methods.makeSlug = function () {
