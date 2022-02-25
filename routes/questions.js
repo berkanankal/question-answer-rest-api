@@ -15,6 +15,7 @@ const {
 const {
   checkQuestionExist,
 } = require("../middlewares/database/databaseErrorHelpers");
+const answers = require("./answers");
 
 const router = express.Router();
 
@@ -37,5 +38,6 @@ router.get(
   [getAccessToRoute, checkQuestionExist],
   dislikeQuestion
 );
+router.use("/:id/answers", checkQuestionExist, answers);
 
 module.exports = router;
