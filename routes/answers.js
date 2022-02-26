@@ -5,6 +5,8 @@ const {
   getSingleAnswerByQuestion,
   editAnswer,
   deleteAnswer,
+  likeAnswer,
+  dislikeAnswer,
 } = require("../controllers/answers");
 const {
   getAccessToRoute,
@@ -32,6 +34,16 @@ router.delete(
   "/:answer_id",
   [getAccessToRoute, checkQuestionAndAnswerExist, getAnswerOwnerAccess],
   deleteAnswer
+);
+router.get(
+  "/:answer_id/like",
+  [getAccessToRoute, checkQuestionAndAnswerExist],
+  likeAnswer
+);
+router.get(
+  "/:answer_id/dislike",
+  [getAccessToRoute, checkQuestionAndAnswerExist],
+  dislikeAnswer
 );
 
 module.exports = router;

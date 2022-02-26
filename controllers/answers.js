@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Answer = require("../models/Answer");
 const Question = require("../models/Question");
+const CustomError = require("../helpers/error/CustomError");
 
 const addNewAnswerToQuestion = asyncHandler(async (req, res, next) => {
   const { content } = req.body;
@@ -86,10 +87,52 @@ const deleteAnswer = asyncHandler(async (req, res, next) => {
   });
 });
 
+const likeAnswer = asyncHandler(async (req, res, next) => {
+  const { answer_id } = req.params;
+  const user_id = req.user.id;
+
+  const answer = await Answer.findById(answer_id);
+
+  if (answer.likes.includes(user_id)) {
+    return next(new CustomError("You already liked this answer", 400));
+  }
+
+  answer.likes.push(user_id);
+  await answer.save();
+
+  return res.status(200).json({
+    success: true,
+    data: answer,
+  });
+});
+
+const dislikeAnswer = asyncHandler(async (req, res, next) => {
+  const { answer_id } = req.params;
+  const user_id = req.user.id;
+
+  const answer = await Answer.findById(answer_id);
+
+  if (!answer.likes.includes(user_id)) {
+    return next(new CustomError("You haven't liked this question", 400));
+  }
+
+  answer.likes = answer.likes.filter((like) => like != user_id);
+  // const index = question.likes.indexOf(userId);
+  // question.likes.splice(index, 1);
+  await answer.save();
+
+  return res.status(200).json({
+    success: true,
+    data: answer,
+  });
+});
+
 module.exports = {
   addNewAnswerToQuestion,
   getAllAnswersByQuestion,
   getSingleAnswerByQuestion,
   editAnswer,
   deleteAnswer,
+  likeAnswer,
+  dislikeAnswer,
 };
