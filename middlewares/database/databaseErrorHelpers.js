@@ -1,5 +1,7 @@
 const User = require("../../models/User");
 const Question = require("../../models/Question");
+const Answer = require("../../models/Answer");
+
 const CustomError = require("../../helpers/error/CustomError");
 const asyncHandler = require("express-async-handler");
 
@@ -27,4 +29,25 @@ const checkQuestionExist = asyncHandler(async (req, res, next) => {
   return next();
 });
 
-module.exports = { checkUserExist, checkQuestionExist };
+const checkQuestionAndAnswerExist = asyncHandler(async (req, res, next) => {
+  const { question_id, answer_id } = req.params;
+
+  const answer = await Answer.findOne({
+    _id: answer_id,
+    question: question_id,
+  });
+
+  if (!answer) {
+    return next(
+      new CustomError("Answer not found with associated with this question")
+    );
+  }
+
+  return next();
+});
+
+module.exports = {
+  checkUserExist,
+  checkQuestionExist,
+  checkQuestionAndAnswerExist,
+};
