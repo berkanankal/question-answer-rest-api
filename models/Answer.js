@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const asyncHandler = require("express-async-handler");
+const Question = require("../models/Question");
 
 const { Schema } = mongoose;
 
@@ -28,6 +30,14 @@ const AnswerSchema = new Schema({
       ref: "User",
     },
   ],
+});
+
+AnswerSchema.pre("save", async function (next) {
+  if (!this.isModified("user")) return next();
+
+  const question = await Question.findById(this.question);
+  question.answers.push(this._id);
+  await question.save();
 });
 
 module.exports = mongoose.model("Answer", AnswerSchema);

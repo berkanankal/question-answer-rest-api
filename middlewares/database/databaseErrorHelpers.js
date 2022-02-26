@@ -16,7 +16,7 @@ const checkUserExist = asyncHandler(async (req, res, next) => {
 });
 
 const checkQuestionExist = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const id = req.params.id || req.params.question_id;
 
   const question = await Question.findById(id);
 

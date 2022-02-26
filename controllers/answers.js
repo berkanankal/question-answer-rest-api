@@ -1,9 +1,22 @@
-const getAllAnswers = (req, res, next) => {
-  console.log(req.params);
+const asyncHandler = require("express-async-handler");
+const CustomError = require("../helpers/error/CustomError");
+const Answer = require("../models/Answer");
 
-  res.status(200).json({
-    success: true,
+const addNewAnswerToQuestion = asyncHandler(async (req, res, next) => {
+  const { content } = req.body;
+  const { question_id } = req.params;
+  const user_id = req.user.id;
+
+  const answer = await Answer.create({
+    content,
+    user: user_id,
+    question: question_id,
   });
-};
 
-module.exports = { getAllAnswers };
+  return res.status(200).json({
+    success: true,
+    data: answer,
+  });
+});
+
+module.exports = { addNewAnswerToQuestion };

@@ -38,6 +38,6 @@ router.get(
   [getAccessToRoute, checkQuestionExist],
   dislikeQuestion
 );
-router.use("/:id/answers", checkQuestionExist, answers);
+router.use("/:question_id/answers", checkQuestionExist, answers);
 
 module.exports = router;
