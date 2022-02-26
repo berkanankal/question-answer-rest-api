@@ -57,8 +57,25 @@ const getSingleAnswerByQuestion = asyncHandler(async (req, res, next) => {
   });
 });
 
+const editAnswer = asyncHandler(async (req, res, next) => {
+  const { answer_id } = req.params;
+  const { content } = req.body;
+
+  const answer = await Answer.findByIdAndUpdate(
+    answer_id,
+    { content },
+    { new: true, runValidators: true }
+  );
+
+  return res.status(200).json({
+    success: true,
+    data: answer,
+  });
+});
+
 module.exports = {
   addNewAnswerToQuestion,
   getAllAnswersByQuestion,
   getSingleAnswerByQuestion,
+  editAnswer,
 };

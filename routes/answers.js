@@ -3,8 +3,12 @@ const {
   addNewAnswerToQuestion,
   getAllAnswersByQuestion,
   getSingleAnswerByQuestion,
+  editAnswer,
 } = require("../controllers/answers");
-const { getAccessToRoute } = require("../middlewares/authorization/auth");
+const {
+  getAccessToRoute,
+  getAnswerOwnerAccess,
+} = require("../middlewares/authorization/auth");
 const {
   checkQuestionAndAnswerExist,
 } = require("../middlewares/database/databaseErrorHelpers");
@@ -17,6 +21,11 @@ router.get(
   "/:answer_id",
   checkQuestionAndAnswerExist,
   getSingleAnswerByQuestion
+);
+router.put(
+  "/:answer_id",
+  [getAccessToRoute, checkQuestionAndAnswerExist, getAnswerOwnerAccess],
+  editAnswer
 );
 
 module.exports = router;
