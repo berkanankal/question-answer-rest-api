@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const asyncHandler = require("express-async-handler");
 const Question = require("../models/Question");
 
 const { Schema } = mongoose;
@@ -37,6 +36,13 @@ AnswerSchema.pre("save", async function (next) {
 
   const question = await Question.findById(this.question);
   question.answers.push(this._id);
+  await question.save();
+});
+
+AnswerSchema.post("remove", async function () {
+  const question = await Question.findById(this.question);
+  const answerIndex = question.answers.indexOf(this._id);
+  question.answers.splice(answerIndex, 1);
   await question.save();
 });
 

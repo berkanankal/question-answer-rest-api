@@ -73,9 +73,23 @@ const editAnswer = asyncHandler(async (req, res, next) => {
   });
 });
 
+const deleteAnswer = asyncHandler(async (req, res, next) => {
+  const { answer_id } = req.params;
+
+  const answer = await Answer.findById(answer_id);
+
+  await answer.remove();
+
+  return res.status(200).json({
+    success: true,
+    message: "Answer deleted successfully",
+  });
+});
+
 module.exports = {
   addNewAnswerToQuestion,
   getAllAnswersByQuestion,
   getSingleAnswerByQuestion,
   editAnswer,
+  deleteAnswer,
 };
