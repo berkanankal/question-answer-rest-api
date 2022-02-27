@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "import": "node dummy-generator --import",
+    "delete": "node dummy-generator --delete"
   },
   "keywords": [],
   "author": "",
