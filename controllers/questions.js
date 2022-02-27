@@ -3,7 +3,18 @@ const asyncHandler = require("express-async-handler");
 const CustomError = require("../helpers/error/CustomError");
 
 const getAllQuestions = asyncHandler(async (req, res, next) => {
-  const questions = await Question.find();
+  console.log(req.query);
+  let query = Question.find().populate({
+    path: "user",
+    select: "name profile_image",
+  });
+
+  if (req.query.search) {
+    const regex = new RegExp(req.query.search, "i");
+    query = query.where({ title: regex });
+  }
+
+  const questions = await query;
 
   return res.status(200).json({
     success: true,
