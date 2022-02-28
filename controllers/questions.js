@@ -3,7 +3,6 @@ const asyncHandler = require("express-async-handler");
 const CustomError = require("../helpers/error/CustomError");
 
 const getAllQuestions = asyncHandler(async (req, res, next) => {
-  console.log(req.query);
   let query = Question.find().populate({
     path: "user",
     select: "name profile_image",
@@ -14,10 +13,34 @@ const getAllQuestions = asyncHandler(async (req, res, next) => {
     query = query.where({ title: regex });
   }
 
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const total = await Question.countDocuments();
+
+  const pagination = {};
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit,
+    };
+  }
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit,
+    };
+  }
+
+  query = query.skip(startIndex).limit(limit);
+
   const questions = await query;
 
   return res.status(200).json({
     success: true,
+    count: questions.length,
+    pagination,
     data: questions,
   });
 });
