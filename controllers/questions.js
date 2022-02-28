@@ -8,11 +8,13 @@ const getAllQuestions = asyncHandler(async (req, res, next) => {
     select: "name profile_image",
   });
 
+  // Search
   if (req.query.search) {
     const regex = new RegExp(req.query.search, "i");
     query = query.where({ title: regex });
   }
 
+  // Pagination
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
   const startIndex = (page - 1) * limit;
@@ -34,6 +36,18 @@ const getAllQuestions = asyncHandler(async (req, res, next) => {
   }
 
   query = query.skip(startIndex).limit(limit);
+
+  // Sort
+  const sortKey = req.query.sortBy;
+
+  if (sortKey === "most-liked") {
+    query = query.sort("-likeCount -createdAt");
+  }
+  if (sortKey === "most-answered") {
+    query = query.sort("-answerCount -createdAt");
+  } else {
+    query = query.sort("-createdAt");
+  }
 
   const questions = await query;
 
@@ -120,6 +134,7 @@ const likeQuestion = asyncHandler(async (req, res, next) => {
   }
 
   question.likes.push(userId);
+  question.likeCount = question.likes.length;
   await question.save();
 
   return res.status(200).json({
@@ -141,6 +156,7 @@ const dislikeQuestion = asyncHandler(async (req, res, next) => {
   question.likes = question.likes.filter((like) => like != userId);
   // const index = question.likes.indexOf(userId);
   // question.likes.splice(index, 1);
+  question.likeCount = question.likes.length;
   await question.save();
 
   return res.status(200).json({

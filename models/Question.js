@@ -31,12 +31,20 @@ const QuestionSchema = new Schema({
       ref: "User",
     },
   ],
+  likeCount: {
+    type: Number,
+    default: 0,
+  },
   answers: [
     {
       type: Schema.Types.ObjectId,
       ref: "Answer",
     },
   ],
+  answerCount: {
+    type: Number,
+    default: 0,
+  },
 });
 
 QuestionSchema.methods.makeSlug = function () {

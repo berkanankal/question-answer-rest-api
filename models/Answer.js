@@ -29,13 +29,17 @@ const AnswerSchema = new Schema({
       ref: "User",
     },
   ],
+  likeCount: {
+    type: Number,
+    default: 0,
+  },
 });
 
 AnswerSchema.pre("save", async function (next) {
   if (!this.isModified("user")) return next();
-
   const question = await Question.findById(this.question);
   question.answers.push(this._id);
+  question.answerCount = question.answers.length;
   await question.save();
 });
 
@@ -43,6 +47,7 @@ AnswerSchema.post("remove", async function () {
   const question = await Question.findById(this.question);
   const answerIndex = question.answers.indexOf(this._id);
   question.answers.splice(answerIndex, 1);
+  question.answerCount = question.answers.length;
   await question.save();
 });
 
