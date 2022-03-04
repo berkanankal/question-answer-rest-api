@@ -10,7 +10,7 @@ To get the Node server running locally:
   * Set `JWT_SECRET_KEY = <YOUR_SECRET_KEY>`
   * Set `SMTP_EMAIL=<YOUR_GMAIL_EMAIL>`
   * Set `SMTP_PASS=<YOUR_GMAIL_PASSWORD>`
-- `node dummy-generator.js --import` to load dummy data to database
+- `node run import` to load dummy data to database
 - `npm start` to start the local server
 
 # Code Overview
